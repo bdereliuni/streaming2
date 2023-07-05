@@ -97,6 +97,8 @@ export default function Player() {
     srcUrl = `https://v2.vidsrc.me/embed/${id}${season ? "/" + season : ""}${episode ? "-" + episode : ""}${color}`;
   } else if (source === 2) {
     srcUrl = `https://upgrade.wtf/stream4/?id=${id}${season ? "&s=" + season : ""}${episode ? "&e=" + episode : ""}`;
+  } else if (source === 3) {
+    srcUrl = `https://embed.smashystream.com/playere.php?tmdb=${id}${season ? "&season=" + season : ""}${episode ? "&episode=" + episode : ""}`;
   }
 
   return (
@@ -144,6 +146,10 @@ export default function Player() {
             <button onClick={() => setSource(2)} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', padding: '5px', color: 'white' }}>
               <i className="fa-solid fa-video"></i> Source 2
             </button>
+
+            <button onClick={() => setSource(3)} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', padding: '5px', color: 'white' }}>
+            <i className="fa-solid fa-video"></i> Source 3
+          </button>
 
             <Link to={`/${type}/${id}`}>
               <i className="fa-solid fa-close"></i>
