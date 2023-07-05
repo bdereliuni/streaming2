@@ -1,6 +1,6 @@
 export default {
   //Site display name
-  SITE_TITLE: "Dizi Father",
+  SITE_TITLE: "HQTools.xyz Streaming Service",
 
   //Put your discord link here or null to disable
   SITE_DISCORD: "",
