@@ -93,8 +93,7 @@ export default function Player() {
 
   let srcUrl = "";
   if (source === 1) {
-    const color = "/color-ffbb00";
-    srcUrl = `https://v2.vidsrc.me/embed/${id}${season ? "/" + season : ""}${episode ? "-" + episode : ""}${color}`;
+    srcUrl = `https://v2.vidsrc.me/embed/${id}${season ? "/" + season : ""}${episode ? "-" + episode : ""}`;
   } else if (source === 2) {
     srcUrl = `https://upgrade.wtf/stream4/?id=${id}${season ? "&s=" + season : ""}${episode ? "&e=" + episode : ""}`;
   } else if (source === 3) {
