@@ -119,7 +119,7 @@ export default function Player() {
         {
           typeof type !== "undefined" &&
           <div style={{ width: '100%', height: '100%' }}>
-            <iframe allowFullScreen onLoad={() => setLoaded(true)} src={srcUrl}></iframe>
+            <iframe allowFullScreen onLoad={() => setLoaded(true)} src={srcUrl} referrerPolicy="origin"></iframe>
             <script src="https://filters.adtidy.org/extension/firefox/filters.js"></script>
             <script src="https://filters.adtidy.org/extension/chromium/filters.js"></script>
           </div>
