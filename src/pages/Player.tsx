@@ -138,11 +138,11 @@ export default function Player() {
               </Link>
             )}
 
-            <button onClick={() => setSource(1)} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', padding: '5px', color: 'white' }}>
+            {/*<button onClick={() => setSource(1)} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', padding: '5px', color: 'white' }}>
               <i className="fa-solid fa-video"></i> Source 1
             </button>
 
-            {/*<button onClick={() => setSource(2)} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', padding: '5px', color: 'white' }}>
+            <button onClick={() => setSource(2)} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', padding: '5px', color: 'white' }}>
               <i className="fa-solid fa-video"></i> Source 2
             </button>
 
