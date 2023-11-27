@@ -93,7 +93,7 @@ export default function Player() {
 
   let srcUrl = "";
   if (source === 1) {
-    srcUrl = `https://v2.vidsrc.xyz/embed/${id}${season ? "/" + season : ""}${episode ? "-" + episode : ""}`;
+    srcUrl = `https://vidsrc.xyz/embed/${id}${season ? "/" + season : ""}${episode ? "-" + episode : ""}`;
   } else if (source === 2) {
     srcUrl = `https://upgrade.wtf/stream4/?id=${id}${season ? "&s=" + season : ""}${episode ? "&e=" + episode : ""}`;
   } else if (source === 3) {
