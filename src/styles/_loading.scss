@@ -1,49 +1,44 @@
-.loading{
-  position: absolute;
-
+.loading {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  top: 50%;
-  left: 50%;
+  position: fixed;
 
-  width: 100%;
-  max-width: 200px;
-
-  transform: translate(-50%, -50%);
-}
-
-.loading .logo{
-  display: block;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.loading .spinner{
-  position: relative;
-  width: 25px;
-  height: 25px;
-
-  padding-top: 1px;
-}
-
-.loading .spinner i{
-  position: absolute;
   top: 0;
   left: 0;
-  
-  font-size: 25px;
 
-  animation: spinner 1s linear forwards infinite;
+  height: 100%;
+  width: 100%;
+
+  padding: 30px;
+
+  background: linear-gradient(to bottom, $background-color 0%, #090909 100%);
+
+  font-size: 35px;
+  font-weight: 700;
+
+  z-index: $loading-index;
 }
 
-@keyframes spinner{
-  0%{
-    transform: rotate(0deg);
+.loading img {
+  display: block;
+
+  max-width: 200px;
+
+  animation: loading_pulse 2s ease-in-out infinite forwards;
+}
+
+@keyframes loading_pulse {
+  0% {
+    opacity: 1;
   }
-  100%{
-    transform: rotate(360deg);
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
   }
 }

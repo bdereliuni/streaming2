@@ -1,35 +1,18 @@
-import PosterOptions from "./PosterOptions"
+import Genre from './Genre';
+import MediaShort from './MediaShort';
 
-interface MediaProps{
-  id: string,
-  title: string,
-  description: string,
-  tagline?: string,
-  genres: string[],
-  date: string,
-  suggested: PosterOptions[],
+export default interface Media {
+  id: number;
+  title: string;
+  description: string;
+  tagline: string | null;
+  genres: Genre[];
+  date: string;
+  rating: number;
+  suggested: MediaShort[];
   images: {
-    backdrop: string,
-    logo: string
-  }
-}
-
-export interface MovieProps extends MediaProps{
-  runtime: number
-}
-
-export interface TvData extends MediaProps{
-  seasons: number,
-  episodes: EpisodeProps[]
-}
-
-export interface TvProps extends MediaProps{
-  seasons: number
-}
-
-export interface EpisodeProps{
-  number: string|number,
-  image: string,
-  title: string,
-  runtime: number
+    backdrop: string;
+    poster: string;
+    logo: string;
+  };
 }

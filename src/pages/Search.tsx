@@ -1,101 +1,80 @@
-import { Fragment, useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
-import conf from "../config";
+import Loading from '@/components/Loading';
 
-import PosterOptions from "../types/PosterOptions";
+import MediaShort from '@/types/MediaShort';
+import Card from '@/components/Card';
 
-export default function Search(){
-  const [query, setQuery] = useState<string|null>();
-  const [error, setError] = useState<string|null>();
-  const [results, setResults] = useState<PosterOptions[]|null>();
+export default function Search() {
+  const nav = useNavigate();
 
-  async function loadResults(){
-    if(!query || !query.length){
-      setError(null);
-      setResults(null);
+  const [searchParams] = useSearchParams();
+
+  const [data, setData] = useState<MediaShort[]>();
+  const [query, setQuery] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  async function getData() {
+    const query = searchParams.get('q');
+
+    if (!query) {
+      nav('/');
       return;
     }
 
-    if(query.length < 3){
-      setError(null);
-      setResults(null);
-      return;
-    }
+    setLoading(true);
+    setData(undefined);
+    setQuery(query);
 
-    const req = await fetch(`${conf.RIPPER_API}/v3/search?query=${query}`);
+    const req = await fetch(`${import.meta.env.VITE_APP_API}/search?q=${query}`);
     const res = await req.json();
 
-    if("error" in res){
-      setResults(null);
-      setError(res.error);
+    if (!res.success) {
+      setLoading(false);
       return;
     }
 
-    if(!("data" in res)){
-      setResults(null);
-      setError("Unexpected search error, please try again.");
+    const data = res.data;
+
+    if (!data.length) {
+      setLoading(false);
       return;
     }
 
-    setError(null);
-    setResults(res.data);
+    setData(data);
+    setLoading(false);
   }
 
   useEffect(() => {
-    loadResults();
-  }, [query]);
+    const timeout = setTimeout(() => {
+      getData();
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [searchParams]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
-    <Fragment>
+    <>
       <Helmet>
-        <title>{query ? query : "Search"} - {conf.SITE_TITLE}</title>
+        <title>
+          {query.length ? `'${query}'` : 'Search'} - {import.meta.env.VITE_APP_NAME}
+        </title>
       </Helmet>
 
-      <div className="search-input">
-        <input
-        type="text"
-        value={query || ""}
-        onChange={e => setQuery(e.target.value)}
-        placeholder="Search for movies and series" />
+      <div className="page">
+        <h1 className="page-title">{query}</h1>
 
-        {
-          query &&
-          <i
-          className="fa-regular fa-xmark"
-          onClick={() => setQuery(null)}></i>
-        }
+        <div className="page-cards">{data && data.map(media => <Card key={media.id + media.type} {...media} />)}</div>
       </div>
-
-      {
-        error ?
-        <div className="search-center">
-          <i className="fa-solid fa-warning warning"></i>
-          <p>{error}</p>
-        </div>
-        :
-        (
-          (results && results.length)
-          ?
-          <Fragment>
-            <p className="search-title">Results</p>
-
-            <div className="search-results">
-              {
-                results.map((v, i) => {
-                  return <Link className='poster' key={i} title={v.title} to={`/${v.type}/${v.id}`} style={{backgroundImage: `url('${v.image}')`}}></Link>
-                })
-              }
-            </div>
-          </Fragment>
-          :
-          <div className="search-center">
-            <i className="fa-solid fa-camera-movie"></i>
-            <p>Search for movies & series</p>
-          </div>
-        )
-      }
-    </Fragment>
-  )
+    </>
+  );
 }
