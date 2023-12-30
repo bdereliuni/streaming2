@@ -28,11 +28,11 @@ export default function List() {
   return (
     <>
       <Helmet>
-        <title>Watchlist - {import.meta.env.VITE_APP_NAME}</title>
+        <title>İzleme Listem - {import.meta.env.VITE_APP_NAME}</title>
       </Helmet>
 
       <div className="page">
-        <h1 className="page-title">Watchlist</h1>
+        <h1 className="page-title">İzleme Listem</h1>
 
         <div className="page-cards">
           {wishlist.map(media => (
