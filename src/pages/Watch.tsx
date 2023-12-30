@@ -43,8 +43,9 @@ export default function Watch() {
   }
 
   function getSource() {
-  let url = `https://vidsrc.xyz/embed/${type}/${id}`;
+  let modifiedType = type === 'series' ? 'tv' : type;
 
+  let url = `https://vidsrc.xyz/embed/${modifiedType}/${id}`;
   url += `?v=${import.meta.env.VITE_APP_VERSION}&n=${import.meta.env.VITE_APP_NAME}`;
 
   if (window.location.origin) url += `&o=${encodeURIComponent(window.location.origin)}`;
@@ -52,6 +53,7 @@ export default function Watch() {
 
   return url;
 }
+
 
 
   function getTitle() {
