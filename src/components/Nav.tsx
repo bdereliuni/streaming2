@@ -80,10 +80,10 @@ export default function Nav() {
       </Link>
 
       <div className="top-bar-links">
-        <NavLink to="/">Browse</NavLink>
-        <NavLink to="/movies">Movies</NavLink>
-        <NavLink to="/series">Series</NavLink>
-        <NavLink to="/list">My List</NavLink>
+        <NavLink to="/">Keşfet</NavLink>
+        <NavLink to="/movies">Filmler</NavLink>
+        <NavLink to="/series">Diziler</NavLink>
+        <NavLink to="/list">Listem</NavLink>
 
         <NavLink className="mobile" to="/movies">
           <i className="fa-regular fa-film"></i>
