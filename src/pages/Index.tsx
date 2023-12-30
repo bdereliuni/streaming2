@@ -82,7 +82,7 @@ export default function Index() {
 
             <Link className="button secondary" to={`/${hero.type}/${hero.id}`}>
               <i className="fa-regular fa-circle-info"></i>
-              <span>More Info</span>
+              <span>Daha fazla bilgi</span>
             </Link>
           </div>
         </div>
