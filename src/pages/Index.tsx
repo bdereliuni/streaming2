@@ -77,7 +77,7 @@ export default function Index() {
           <div className="hero-actions">
             <Link className="button" to={`/watch/${hero.id}${hero.type === 'series' ? '?s=1&e=1' : ''}`}>
               <i className="fa-solid fa-play"></i>
-              <span>Play</span>
+              <span>İzle</span>
             </Link>
 
             <Link className="button secondary" to={`/${hero.type}/${hero.id}`}>
