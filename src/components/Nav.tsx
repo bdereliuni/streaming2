@@ -103,7 +103,7 @@ export default function Nav() {
           <div className="top-bar-input">
             <i className="fa-regular fa-search"></i>
 
-            <input type="text" ref={inputRef} value={search} placeholder="Ara" onChange={onSearchChange} />
+            <input type="text" ref={inputRef} value={search} placeholder="Search" onChange={onSearchChange} />
           </div>
         ) : (
           <i className="fa-regular fa-search action" onClick={onSearchClick}></i>

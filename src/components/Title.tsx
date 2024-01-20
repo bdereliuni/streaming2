@@ -213,7 +213,7 @@ export default function Title({ type, id }: TitleProps) {
             <div className="title-actions">
               <Link className="button" to={`/watch/${id}${type === 'series' ? `?s=${season}&e=${episode}` : ''}`}>
                 <i className="fa-solid fa-play"></i>
-                <span>{type === 'series' ? `S${season} E${episode}` : 'İzle'}</span>
+                <span>{type === 'series' ? `S${season} E${episode}` : 'Play'}</span>
               </Link>
 
               {wished ? (
