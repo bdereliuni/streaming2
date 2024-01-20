@@ -238,7 +238,7 @@ export default function Title({ type, id }: TitleProps) {
 
                   {'runtime' in data && <span>{getLength(data.runtime)}</span>}
 
-                  {'seasons' in data && <span>{data.seasons} Sezonlar</span>}
+                  {'seasons' in data && <span>{data.seasons} Seasons</span>}
                 </div>
 
                 <p className="title-description">{data.description}</p>
@@ -260,12 +260,12 @@ export default function Title({ type, id }: TitleProps) {
             {'seasons' in data && (
               <div className="title-section">
                 <div className="title-row">
-                  <h3>Bölümler</h3>
+                  <h3>Episodes</h3>
 
                   <select className="title-select" defaultValue={season} onChange={onSeasonChange}>
                     {Array.from({ length: data.seasons }).map((_, i) => (
                       <option key={i} value={i + 1}>
-                        Sezon {i + 1}
+                        Season {i + 1}
                       </option>
                     ))}
                   </select>
@@ -292,7 +292,7 @@ export default function Title({ type, id }: TitleProps) {
 
             {data.suggested.length > 0 && (
               <div className="title-section">
-                <h3>Benzer İçerik</h3>
+                <h3>Similar</h3>
 
                 <div className="title-cards">
                   {data.suggested.map((media, i) => {
