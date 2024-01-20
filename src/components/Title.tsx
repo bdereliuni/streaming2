@@ -246,7 +246,7 @@ export default function Title({ type, id }: TitleProps) {
 
               <div className="title-col">
                 <div className="title-list">
-                  <span className="head">Türler:</span>
+                  <span className="head">Genre:</span>
                   {data.genres.map((genre, i) => (
                     <Link to={`/genre/${type}/${genre.id}`} key={i}>
                       {genre.name}
