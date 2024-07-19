@@ -43,18 +43,20 @@ export default function Watch() {
   }
 
   function getSource() {
-  let modifiedType = type === 'series' ? 'tv' : type;
+    let url = '';
 
-  let url = `https://vidsrc.pro/embed/${modifiedType}/${id}`;
-  url += `?v=${import.meta.env.VITE_APP_VERSION}&n=${import.meta.env.VITE_APP_NAME}`;
+    if (type === 'series') {
+      url = `https://vidsrc.pro/embed/tv/${id}/${season}/${episode}`;
+    } else {
+      url = `https://vidsrc.pro/embed/movie/${id}`;
+    }
 
-  if (window.location.origin) url += `&o=${encodeURIComponent(window.location.origin)}`;
-  if (type === 'series') url += `&s=${season}&e=${episode}`;
+    url += `?v=${import.meta.env.VITE_APP_VERSION}&n=${import.meta.env.VITE_APP_NAME}`;
 
-  return url;
-}
+    if (window.location.origin) url += `&o=${encodeURIComponent(window.location.origin)}`;
 
-
+    return url;
+  }
 
   function getTitle() {
     let title = data ? data.title : 'Watch';
