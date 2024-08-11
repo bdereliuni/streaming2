@@ -133,19 +133,22 @@ export default function Watch() {
   function getSource() {
     if (!data) return '';
     
-    let url = `https://watchondemand.buzz/media/tmdb-tv-${id}`;
-    if (type === 'series' && seasonId && episodeId) {
-      url += `/${seasonId}/${episodeId}`;
+    let url = `https://watchondemand.buzz/media/tmdb-`;
+    if (type === 'series') {
+      url += `tv-${id}`;
+      if (seasonId && episodeId) {
+        url += `/${seasonId}/${episodeId}`;
+      }
+    } else {
+      url += `movie-${id}`;
     }
     console.log(`Generated source URL: ${url}`);
     return url;
   }
 
   function getTitle() {
-    let title = data ? data.title : 'Watch';
-
+    let title = data ? (data.name || data.title || 'Watch') : 'Watch';
     if (type === 'series') title += ` S${season} E${episode}`;
-
     return title;
   }
 
