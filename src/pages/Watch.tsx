@@ -142,8 +142,10 @@ export default function Watch() {
   }
 
   function getTitle() {
-    let title = data ? (data.name || data.title) : 'Watch';
+    let title = data ? data.title : 'Watch';
+
     if (type === 'series') title += ` S${season} E${episode}`;
+
     return title;
   }
 
