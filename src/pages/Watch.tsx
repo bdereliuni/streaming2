@@ -10,11 +10,8 @@ import MediaShort from '@/types/MediaShort';
 
 export default function Watch() {
   const nav = useNavigate();
-
   const { id } = useParams();
-
   const [search] = useSearchParams();
-
   const [type, setType] = useState<MediaType>('movie');
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
@@ -23,7 +20,6 @@ export default function Watch() {
 
   function addViewed(data: MediaShort) {
     let viewed: MediaShort[] = [];
-
     const storage = localStorage.getItem('viewed');
 
     if (storage) {
@@ -38,22 +34,17 @@ export default function Watch() {
 
     viewed.unshift(data);
     viewed = viewed.slice(0, 15);
-
     localStorage.setItem('viewed', JSON.stringify(viewed));
   }
 
   function getSource() {
-    let url = '';
+    let url = `https://watchondemand.buzz/media/tmdb-${type}-${id}`;
 
     if (type === 'series') {
-      url = `https://vidsrc.pro/embed/tv/${id}/${season}/${episode}`;
-    } else {
-      url = `https://vidsrc.pro/embed/movie/${id}`;
+      const seriesId = data?.seriesId || ''; // Need clarification on how to extract these IDs
+      const episodeId = data?.episodeId || '';
+      url += `/${seriesId}/${episodeId}`;
     }
-
-    url += `?v=${import.meta.env.VITE_APP_VERSION}&n=${import.meta.env.VITE_APP_NAME}`;
-
-    if (window.location.origin) url += `&o=${encodeURIComponent(window.location.origin)}`;
 
     return url;
   }
@@ -67,7 +58,7 @@ export default function Watch() {
   }
 
   async function getData(_type: MediaType) {
-    const req = await fetch(`${import.meta.env.VITE_APP_API}/${_type}/${id}`);
+    const req = await fetch(`https://watchondemand.buzz/media/tmdb-${_type}-${id}`);
     const res = await req.json();
 
     if (!res.success) {
@@ -75,19 +66,18 @@ export default function Watch() {
     }
 
     const data: Movie | Series = res.data;
-
     setData(data);
 
     addViewed({
       id: data.id,
       poster: data.images.poster,
       title: data.title,
-      type: _type
+      type: _type,
     });
   }
 
   async function getMaxEpisodes(season: number) {
-    const req = await fetch(`${import.meta.env.VITE_APP_API}/episodes/${id}?s=${season}`);
+    const req = await fetch(`https://watchondemand.buzz/episodes/${id}?s=${season}`);
     const res = await req.json();
 
     if (!res.success) {
@@ -96,7 +86,6 @@ export default function Watch() {
     }
 
     const data = res.data;
-
     setMaxEpisodes(data.length);
   }
 
@@ -136,14 +125,13 @@ export default function Watch() {
     }
 
     setType('series');
-
     getData('series');
 
     localStorage.setItem(
       'continue_' + id,
       JSON.stringify({
         season: parseInt(s),
-        episode: parseInt(e)
+        episode: parseInt(e),
       })
     );
   }, [id, search]);
@@ -167,12 +155,15 @@ export default function Watch() {
       <div className="player">
         <div className="player-controls">
           <i className="fa-regular fa-arrow-left" onClick={() => nav(`/${type}/${id}`)}></i>
-
-          {type === 'series' && episode < maxEpisodes && <i className="fa-regular fa-forward-step right" onClick={() => nav(`/watch/${id}?s=${season}&e=${episode + 1}&me=${maxEpisodes}`)}></i>}
+          {type === 'series' && episode < maxEpisodes && (
+            <i
+              className="fa-regular fa-forward-step right"
+              onClick={() => nav(`/watch/${id}?s=${season}&e=${episode + 1}&me=${maxEpisodes}`)}
+            ></i>
+          )}
         </div>
 
         <h2 className="player-title">{getTitle()}</h2>
-
         <iframe allowFullScreen referrerPolicy="origin" title={getTitle()} src={getSource()}></iframe>
       </div>
     </>
