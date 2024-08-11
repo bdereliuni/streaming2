@@ -17,6 +17,8 @@ export default function Watch() {
   const [episode, setEpisode] = useState(1);
   const [maxEpisodes, setMaxEpisodes] = useState(1);
   const [data, setData] = useState<Movie | Series>();
+  const [seasonId, setSeasonId] = useState('');
+  const [episodeId, setEpisodeId] = useState('');
 
   function addViewed(data: MediaShort) {
     let viewed: MediaShort[] = [];
@@ -37,112 +39,113 @@ export default function Watch() {
     localStorage.setItem('viewed', JSON.stringify(viewed));
   }
 
-  function getSource() {
-    let url = `https://watchondemand.buzz/media/tmdb-${type}-${id}`;
-
-    if (type === 'series') {
-      const seriesId = data?.seriesId || ''; // Need clarification on how to extract these IDs
-      const episodeId = data?.episodeId || '';
-      url += `/${seriesId}/${episodeId}`;
-    }
-
-    return url;
+  async function fetchSeriesData() {
+    const apiKey = '9ef876e181780c5fa05b91d3706ab166';
+    const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&append_to_response=external_ids`);
+    const result = await response.json();
+    console.log('Fetched series data:', result);
+    return result;
   }
 
-  function getTitle() {
-    let title = data ? data.title : 'Watch';
-
-    if (type === 'series') title += ` S${season} E${episode}`;
-
-    return title;
+  async function fetchSeasonData(seasonNumber: number) {
+    const apiKey = '9ef876e181780c5fa05b91d3706ab166';
+    const response = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${apiKey}`);
+    const result = await response.json();
+    console.log('Fetched season data:', result);
+    return result;
   }
 
   async function getData(_type: MediaType) {
-    const req = await fetch(`https://watchondemand.buzz/media/tmdb-${_type}-${id}`);
-    const res = await req.json();
-
-    if (!res.success) {
+    const data = await fetchSeriesData();
+    if (!data) {
+      console.error('Failed to fetch data');
       return;
     }
 
-    const data: Movie | Series = res.data;
     setData(data);
+
+    if (_type === 'series') {
+      const seasonData = data.seasons.find((s: any) => s.season_number === season);
+      if (seasonData) {
+        setSeasonId(seasonData.id);
+        console.log(`Set season ID: ${seasonData.id} for season ${season}`);
+        
+        const fullSeasonData = await fetchSeasonData(season);
+        if (fullSeasonData && fullSeasonData.episodes) {
+          const episodeData = fullSeasonData.episodes.find((e: any) => e.episode_number === episode);
+          if (episodeData) {
+            setEpisodeId(episodeData.id.toString());
+            console.log(`Set episode ID: ${episodeData.id} for S${season}E${episode}`);
+          } else {
+            console.error(`Episode ${episode} not found in season ${season}`);
+          }
+          setMaxEpisodes(fullSeasonData.episodes.length);
+        } else {
+          console.error(`Failed to fetch full season data for season ${season}`);
+        }
+      } else {
+        console.error(`Season ${season} not found`);
+      }
+    }
 
     addViewed({
       id: data.id,
-      poster: data.images.poster,
-      title: data.title,
+      poster: data.poster_path,
+      title: data.name || data.title,
       type: _type,
     });
   }
 
-  async function getMaxEpisodes(season: number) {
-    const req = await fetch(`https://watchondemand.buzz/episodes/${id}?s=${season}`);
-    const res = await req.json();
-
-    if (!res.success) {
-      nav('/');
-      return;
-    }
-
-    const data = res.data;
-    setMaxEpisodes(data.length);
-  }
-
-  useEffect(() => {
-    if (!data) return;
-    if (!('seasons' in data)) return;
-
-    if (season > data.seasons) {
-      nav('/');
-      return;
-    }
-
-    if (episode > maxEpisodes) {
-      nav('/');
-      return;
-    }
-  }, [data, maxEpisodes]);
-
   useEffect(() => {
     const s = search.get('s');
     const e = search.get('e');
-    const me = search.get('me');
-
-    if (!s || !e) {
-      setType('movie');
-      getData('movie');
-      return;
-    }
-
-    setSeason(parseInt(s));
-    setEpisode(parseInt(e));
-
-    if (me) {
-      setMaxEpisodes(parseInt(me));
+    console.log(`URL params - s: ${s}, e: ${e}`);
+    if (s && e) {
+      const seasonNum = parseInt(s);
+      const episodeNum = parseInt(e);
+      setSeason(seasonNum);
+      setEpisode(episodeNum);
+      setType('series');
     } else {
-      getMaxEpisodes(parseInt(s));
+      setType('movie');
     }
-
-    setType('series');
-    getData('series');
 
     localStorage.setItem(
       'continue_' + id,
       JSON.stringify({
-        season: parseInt(s),
-        episode: parseInt(e),
+        season: parseInt(s || '1'),
+        episode: parseInt(e || '1'),
       })
     );
   }, [id, search]);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    getData(type);
+  }, [id, type, season, episode]);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, []);
+
+  function getSource() {
+    if (!data) return '';
+    
+    let url = `https://watchondemand.buzz/media/tmdb-tv-${id}`;
+    if (type === 'series' && seasonId && episodeId) {
+      url += `/${seasonId}/${episodeId}`;
+    }
+    console.log(`Generated source URL: ${url}`);
+    return url;
+  }
+
+  function getTitle() {
+    let title = data ? (data.name || data.title) : 'Watch';
+    if (type === 'series') title += ` S${season} E${episode}`;
+    return title;
+  }
 
   return (
     <>
@@ -158,7 +161,7 @@ export default function Watch() {
           {type === 'series' && episode < maxEpisodes && (
             <i
               className="fa-regular fa-forward-step right"
-              onClick={() => nav(`/watch/${id}?s=${season}&e=${episode + 1}&me=${maxEpisodes}`)}
+              onClick={() => nav(`/watch/${id}?s=${season}&e=${episode + 1}`)}
             ></i>
           )}
         </div>
