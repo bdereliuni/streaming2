@@ -75,6 +75,7 @@
             margin-top: 5px;
         }
 
+        /* Mobil uyumluluk için medya sorgusu */
         @media (max-width: 480px) {
             #ad-wrapper {
                 width: 320px;
@@ -97,16 +98,8 @@
     <div id="ad-wrapper">
       <button id="ad-close-btn">Close</button>
       <div id="ad-container">
-        <script type="text/javascript">
-          atOptions = {
-            'key' : '82ed6cd328439502e1a483451943b993',
-            'format' : 'iframe',
-            'height' : 60,
-            'width' : 468,
-            'params' : {}
-          };
-        </script>
-        <script type="text/javascript" src="//www.topcreativeformat.com/82ed6cd328439502e1a483451943b993/invoke.js"></script>
+        <iframe data-aa='2345187' src='//ad.a-ads.com/2345187?size=468x60'></iframe>
+        <a id="preview-link" href="https://aads.com/campaigns/new/?source_id=2345187&source_type=ad_unit&partner=2345187">Advertise here</a>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
